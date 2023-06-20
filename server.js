@@ -12,16 +12,25 @@ app.use(express.json());//Middleware that parses application.json and urlencoded
 app.use(express.urlencoded({extended:true}));
 app.use(express.static('./Develop/public'));//Static middleware pointing to the public folder w/in Develop
 
-//3) Express.js routes || Get Requests || API Routes
-app.get('/', (req, res) => 
-    res.sendFile(path.join(__dirname,'./Develop/public/index.html'))
+//3) Express.js routes 
+
+//Part1) Get Requests 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname,'./Develop/public/index.html'))}
 );//Default route to homepage
-app.get('/notes', (req, res) =>
-    res.sendFile(path.join(__dirname,'./Develop/public/notes.html'))
+app.get('/notes', (req, res) =>{
+    res.sendFile(path.join(__dirname,'./Develop/public/notes.html'))}
 );//Serving another file, specifically notes.html, from the public directory
-app.get('*', (req, res) => 
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname,'./Develop/public/index.html'))
-);//For any other route that's not defined send homepage
+});//For any other route that's not defined send homepage
+
+//Part2)API Routes
+app.get('api/notes',(req,res) =>
+{
+    res.json(notes)//returns notes as json file
+});
+
 
 //4) Set up server to listen
 app.listen(PORT,()=>
