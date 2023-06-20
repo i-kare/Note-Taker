@@ -15,13 +15,13 @@ app.use(express.static('./Develop/public'));//Static middleware pointing to the 
 //3) Express.js routes || Get Requests || API Routes
 app.get('/', (req, res) => 
     res.sendFile(path.join(__dirname,'./Develop/public/index.html'))
-);//Default route back to homepage
+);//Default route to homepage
 app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname,'./Develop/public/notes.html'))
 );//Serving another file, specifically notes.html, from the public directory
-app.get('/index', (req, res) => 
+app.get('*', (req, res) => 
     res.sendFile(path.join(__dirname,'./Develop/public/index.html'))
-);//Serving another file,specifically index.html, from the public directory
+);//For any other route that's not defined send homepage
 
 //4) Set up server to listen
 app.listen(PORT,()=>
