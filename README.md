@@ -17,11 +17,11 @@
 
 ## Deployed Page Url
 
-1. 
+https://note-taker-in-express-0572647b6f7f.herokuapp.com/
 
  
 ## Screenshot of App
 
-1.
+![Note Taker](./Develop/public/assets/img/screenshot.png)
 
 
