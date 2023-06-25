@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express(); // Initiates Express.js
 const noteData = require('./db/db.json');
 const PORT = 3001; //Identifies which port Express.js server runs =process.env.PORT || 3001;
-
+const { v4: uuidv4 } = require('uuid'); // package that will create unique ids per entry
 
 //2) Middleware that have access to req,res, and the next function(s). Middlware executes from top to bottom 
 app.use(express.json());//Middleware that parses application.json and urlencoded data
@@ -19,37 +19,46 @@ app.use(express.static('./public'));//Static middleware pointing to the public f
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'))
 }
-);//Default route to homepage
+);//Default route to homepage, which is index.html
+
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'))
 });//Serving another file, specifically notes.html, from the public directory for notes route
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, './public/index.html'))
-// });//For any other route that's not defined send homepage
-
 //B)API Routes
-app.get('api/notes', (req, res) => {
-    console.log(req)
-    res.json(noteData)
-});
-
+app.get('/api/notes', (req, res) => {
+    return res.json(noteData)
+}); // Returns all saved notes as json
 
 //C)Post request
-//Receive new notes and add to the DB, then return those notes
-app.post('api/notes', (req, res) => {
-    fs.readFile(everyNotePath, 'utf-8', (err, data) => {
+//Receive new notes and add to the DB, then return that specific note
+app.post('/api/notes', (req, res) => {
+    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
         if (err) {
-            console.log('Post failed')
+            console.log('Post read failed');
             return;
         }
-
-        let notes = JSON.parse(data);
-        console.log(notes);
+     
+        const newNote = req.body
+        newNote["id"] = uuidv4(); // Add a unique id to the new note
+        let newArray = JSON.parse(data); // Parse the database and then add the new note to the database
+        newArray.push(newNote)
+        let stringifiedNotes = JSON.stringify(newArray); // Convert back to a string and write to the database
+        fs.writeFile('./db/db.json', stringifiedNotes, 'utf8',(err) => {
+            if(err) {
+                console.log("Post write failed");
+                return;
+            }
+        });
+        return res.json(JSON.stringify(newNote)) // Return the note they requested to get added
     })
 });
 
-//4) Set up server to listen
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'))
+});//For any other route that's not defined send homepage, should be at the bottom to catch all routes
+
+//4) Set up server to listen to port 3001
 app.listen(PORT, () =>
     console.log(`Express server listening on port ${PORT}!`)
 );
