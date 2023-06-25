@@ -54,6 +54,33 @@ app.post('/api/notes', (req, res) => {
     })
 });
 
+// Delete request for a specific ID
+app.delete('/api/notes/:id', (req,res)=>{
+    const id = req.params.id;
+
+    // read the database of notes
+    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
+        if (err) {
+            console.log('Delete read failed');
+            return;
+        }
+
+        let notes = JSON.parse(data);
+        newNotes = notes.filter((element) =>{
+            return element.id !== String(id);
+        }); // remove the note with the same id
+
+        let stringifiedNotes = JSON.stringify(newNotes);
+        fs.writeFile('./db/db.json', stringifiedNotes, 'utf8',(err) => {
+            if(err) {
+                console.log("Delete write failed");
+                return;
+            }
+        }); // write the note with the removed note taken out
+        return res.json(newNotes) // return the new notes
+    });
+}); 
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'))
 });//For any other route that's not defined send homepage, should be at the bottom to catch all routes
