@@ -3,7 +3,6 @@ const express = require('express');  // Import Express.js
 const path = require('path'); // Imports Node.js package 'path' to resolve path files 
 const fs = require('fs');
 const app = express(); // Initiates Express.js
-const noteData = require('./db/db.json');
 const PORT = 3001; //Identifies which port Express.js server runs =process.env.PORT || 3001;
 const { v4: uuidv4 } = require('uuid'); // package that will create unique ids per entry
 
@@ -26,7 +25,14 @@ app.get('/notes', (req, res) => {
 
 //B)API Routes
 app.get('/api/notes', (req, res) => {
-    return res.json(noteData)
+    fs.readFile(path.join(__dirname, './db/db.json'), 'utf-8', (err, data) => {
+        if(err){
+            console.log(err);
+            console.log("Get read file failed");
+            return;
+        }
+        return res.json(JSON.parse(data))
+    })
 }); // Returns all saved notes as json
 
 //C)Post request
