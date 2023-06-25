@@ -11,8 +11,7 @@ const { v4: uuidv4 } = require('uuid'); // package that will create unique ids p
 app.use(express.json());//Middleware that parses application.json and urlencoded data
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('./public'));//Static middleware pointing to the public folder w/in Develop
-
+app.use('/assets', express.static(path.join(__dirname, './public/assets'))) // pointing to the assets folder
 //3) Express.js routes 
 
 //A) Get Requests 
@@ -33,8 +32,9 @@ app.get('/api/notes', (req, res) => {
 //C)Post request
 //Receive new notes and add to the DB, then return that specific note
 app.post('/api/notes', (req, res) => {
-    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
+    fs.readFile(path.join(__dirname, './db/db.json'), 'utf-8', (err, data) => {
         if (err) {
+            console.log(err);
             console.log('Post read failed');
             return;
         }
@@ -44,7 +44,7 @@ app.post('/api/notes', (req, res) => {
         let newArray = JSON.parse(data); // Parse the database and then add the new note to the database
         newArray.push(newNote)
         let stringifiedNotes = JSON.stringify(newArray); // Convert back to a string and write to the database
-        fs.writeFile('./db/db.json', stringifiedNotes, 'utf8',(err) => {
+        fs.writeFile(path.join(__dirname, './db/db.json'), stringifiedNotes, 'utf8',(err) => {
             if(err) {
                 console.log("Post write failed");
                 return;
@@ -59,8 +59,9 @@ app.delete('/api/notes/:id', (req,res)=>{
     const id = req.params.id;
 
     // read the database of notes
-    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
+    fs.readFile(path.join(__dirname, './db/db.json'), 'utf-8', (err, data) => {
         if (err) {
+            console.log(err);
             console.log('Delete read failed');
             return;
         }
@@ -71,7 +72,7 @@ app.delete('/api/notes/:id', (req,res)=>{
         }); // remove the note with the same id
 
         let stringifiedNotes = JSON.stringify(newNotes);
-        fs.writeFile('./db/db.json', stringifiedNotes, 'utf8',(err) => {
+        fs.writeFile(path.join(__dirname, './db/db.json'), stringifiedNotes, 'utf8',(err) => {
             if(err) {
                 console.log("Delete write failed");
                 return;
