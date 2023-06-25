@@ -22,6 +22,6 @@ https://note-taker-in-express-0572647b6f7f.herokuapp.com/
  
 ## Screenshot of App
 
-![Note Taker](./Develop/public/assets/img/screenshot.png)
+![Note Taker](./Develop/img/screenshot.png)
 
 
