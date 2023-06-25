@@ -66,7 +66,7 @@ app.delete('/api/notes/:id', (req,res)=>{
         }
 
         let notes = JSON.parse(data);
-        newNotes = notes.filter((element) =>{
+        let newNotes = notes.filter((element) =>{
             return element.id !== String(id);
         }); // remove the note with the same id
 
