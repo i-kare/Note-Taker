@@ -86,6 +86,6 @@ app.get('*', (req, res) => {
 });//For any other route that's not defined send homepage, should be at the bottom to catch all routes
 
 //4) Set up server to listen to port 3001
-app.listen(PORT, () =>
+app.listen(process.env.PORT || PORT, () =>
     console.log(`Express server listening on port ${PORT}!`)
 );
